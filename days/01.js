@@ -26,5 +26,4 @@ const getElfCalories = (data) => {
   )[0];
 };
 
-
-run('01', puzzle1, puzzle2);
+run("01", puzzle1, puzzle2);
