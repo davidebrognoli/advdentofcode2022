@@ -1,20 +1,20 @@
 const { run } = require("../utils/utils");
 
 const puzzle1 = (data) => {
-  return data.reduce((acc, d) => {
-    const [a, b] = defineAreas(d)
-    const contains = isContained(b, a) ? 1 : 0
-    return acc + contains
-  }, 0)
+  return calculateScore(data, isContained)
 };
 
 const puzzle2 = (data) => {
+  return calculateScore(data, isOverlapped)
+};
+
+const calculateScore = (data, countFn)  => {
   return data.reduce((acc, d) => {
     const [a, b] = defineAreas(d)
-    const overlap = isOverlapped(a, b) ? 1 : 0
+    const overlap = countFn(a, b) ? 1 : 0
     return acc + overlap
   }, 0)
-};
+}
 
 const defineAreas = (data) => {
   return data.split(',').map(player => player.split('-').map(n => parseInt(n, 10)))
