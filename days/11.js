@@ -46,14 +46,14 @@ const parseOperation = (operationTxt) => {
   return (item) => item + parseInt(value)
 }
 
-const round = (players, needDivision) => {
+const round = (players, needDivision, manageable) => {
   players.forEach(p => {
     const { operation, test, trueMonkey, falseMonkey } = p
     while(p.items.length) {
       p.counter++
       const item = p.items.shift()
       const calculatedItem = operation(item)
-      const nextItem = needDivision ? Math.floor(calculatedItem / 3) : calculatedItem
+      const nextItem = needDivision ? Math.floor(calculatedItem / 3) : calculatedItem % manageable
       const nextPlayerKey = nextItem % test === 0 ? trueMonkey : falseMonkey
       players[nextPlayerKey].items.push(nextItem)
     }
@@ -63,8 +63,9 @@ const round = (players, needDivision) => {
 
 const execute = (data, nOfRound, needDivision) => {
   let players = getPlayers(data).map(player => parsePlayer(player))
+  const manageable = players.reduce((acc, p) => acc * p.test, 1)
   const counters = Array(nOfRound).fill(0).reduce((acc, _) => {
-    return round(acc, needDivision)
+    return round(acc, needDivision, manageable)
   }, players).map(p => p.counter).sort((a, b) => b - a)
   return counters[0] * counters[1]
 }
